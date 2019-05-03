@@ -3,16 +3,18 @@ package br.com.cc;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.cc.person.Person;
+
 public class Validation {
 
-	protected List<String> validaPessoa(Pessoa pessoa) {
+	protected List<String> validaPessoa(Person person) {
 		
 		List<String> constraints = new ArrayList<String>();
-		if (pessoa != null) {
-			if (pessoa.cpf != null) {
-				if (pessoa.name != null) {
-					if (pessoa.telefonesFixos != null) {
-						for (String telefone : pessoa.telefonesFixos) {
+		if (person != null) {
+			if (person.getCpf() != null) {
+				if (person.getName() != null) {
+					if (person.getHomePhones() != null) {
+						for (String telefone : person.getHomePhones()) {
 							if (telefone != null) {
 								if (telefone.isEmpty()) {
 									constraints.add("Erro - Telefone inválido");

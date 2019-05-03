@@ -3,36 +3,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import br.com.cc.person.Person;
+
 /**
  * Relatório de pessoas
  * @author Deus
  */
-public class report_de_pessoas {
+public class PeopleReport {
 	/**
 	 * a string para somar todos os nomes na lista 
 	 */
-	static String _s;
 	
 	/**
 	 * imprime a lista de pessoas
 	 * @param paramL
 	 */
-	public static void print_e_vai(Vector paramL){
+	public static String print(Vector paramL){
+		String _s = "";
 		
 		for (int i = 0; i < paramL.size(); i++) {
 			
-			Pessoa p = (Pessoa) paramL.get(i);
+			Person p = (Person) paramL.get(i);
 			Validation validador = new Validation();
 			List<String> erro = validador.validaPessoa(p);
 			
 			if(!erro.isEmpty())
 				continue;
-			
-		    _s += ", " + p.name;			
+
+			if(_s == "")
+				_s += p.getName();
+			else			
+				_s += ", " + p.getName();
 		}
 
-		_s = _s.substring(2); 
 		System.out.print(_s);
+		return _s;
 	}
 	
 	/**
@@ -40,26 +45,25 @@ public class report_de_pessoas {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Vector v = new Vector();
+		Vector<Person> people = new Vector<Person>();
 		
-		Pessoa p = new Pessoa();
-		p.name = "Fulano";
-		p.cpf = "0033435457";
-		ArrayList<String> pessoaTelefonesFixos = new ArrayList<String>();
-		pessoaTelefonesFixos.add("8765343");
-		p.telefonesCelulares = pessoaTelefonesFixos;
-		v.add(p);
+		ArrayList<String> mobilePhones = new ArrayList<String>();
+		mobilePhones.add("8765343");
 		
-		print_e_vai(v);
+		ArrayList<String> homePhones = new ArrayList<String>();
+		mobilePhones.add("4119189");
+		
+		Person person = new Person().builder()
+				.withName("Fulano")
+				.withCpf("0033435457")
+				.withHomePhones(homePhones)
+				.withMobilePhones(mobilePhones)
+				.build();
+		
+		people.add(person);
+		
+		print(people);
 		
 	}
 
-}
-
- class Pessoa{
-	String name;
-	String cpf;
-	int idade;
-	List<String> telefonesFixos;
-	List<String> telefonesCelulares;
 }
