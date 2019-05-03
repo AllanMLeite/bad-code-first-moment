@@ -1,4 +1,4 @@
-package cc.code;
+package br.com.cc;
 
 import java.util.ArrayList;
 import java.util.List;

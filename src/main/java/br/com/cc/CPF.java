@@ -1,4 +1,4 @@
-package cc.code;
+package br.com.cc;
 
 public class CPF {
 
