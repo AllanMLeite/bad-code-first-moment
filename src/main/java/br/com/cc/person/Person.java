@@ -2,6 +2,7 @@ package br.com.cc.person;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,13 +49,11 @@ public class Person {
 	}
 
 	private Collection<? extends String> checkCpf() {
-		List<String> constraints = new ArrayList<String>();
-
 		boolean isValidCpf = CpfValidator.isValidCpf(cpf);
 		if (!isValidCpf) {
-			constraints.add(String.format("%s: CPF %s invalido.", name, cpf));
+			return Collections.singletonList(String.format("%s: CPF %s invalido.", name, cpf));
 		}
-		return constraints;
+		return new ArrayList<String>();
 	}
 
 	private Collection<? extends String> checkMobilePhones() {
@@ -141,5 +140,10 @@ public class Person {
 		public Person build() {
 			return person;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Nome: " + name + ", Fones: " + mobilePhones + ", CPF: " + cpf;
 	}
 }

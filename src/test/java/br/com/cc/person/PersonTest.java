@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,13 +59,10 @@ public class PersonTest {
 	
 	@Test
 	public void shouldReturnMobilePhonesErrors() {
-		List<String> mobilePhones = new ArrayList<String>();
-		mobilePhones.add("123456789");
-		
 		Person somePerson = new Person().builder()
 				.withName("Fulano")
 				.withCpf("01234567890")
-				.withMobilePhones(mobilePhones)
+				.withMobilePhones(Arrays.asList("123456789"))
 				.build();
 		
 		List<String> expectedErrors = new ArrayList<String>();
@@ -74,13 +72,10 @@ public class PersonTest {
 
 	@Test
 	public void shouldntReturnMobilePhonesErrors() {
-		List<String> mobilePhones = new ArrayList<String>();
-		mobilePhones.add("9987876676");
-
 		Person somePerson = new Person().builder()
 				.withName("Fulano")
 				.withCpf("01234567890")
-				.withMobilePhones(mobilePhones)
+				.withMobilePhones(Arrays.asList("9987876676"))
 				.build();
 
 		assertThat(new ArrayList<String>()).containsExactlyElementsOf(somePerson.validateFields());

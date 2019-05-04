@@ -1,5 +1,6 @@
 package br.com.cc.report;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
@@ -15,41 +16,43 @@ public class PersonReport {
 		
 		for (int i = 0; i < paramL.size(); i++) {
 			
-			Person p = (Person) paramL.get(i);
-			List<String> personErrors = p.validateFields();
+			Person person = (Person) paramL.get(i);
+			List<String> personErrors = person.validateFields();
 			errors.addAll(personErrors);
 			
 			if(!personErrors.isEmpty())
 				continue;
 
 			if(StringUtils.isBlank(textToPrint))
-				textToPrint += p.getName();
+				textToPrint += person;
 			else			
-				textToPrint += ", " + p.getName();
+				textToPrint += " | " + person;
 		}
 
 		System.out.print(textToPrint);
 		
 		return new ReportResult(textToPrint, errors);
 	}
-	
+
 	public static void main(String[] args) {
 		Vector<Person> people = new Vector<Person>();
 		
-		ArrayList<String> mobilePhones = new ArrayList<String>();
-		mobilePhones.add("0123456789");
-		
-		ArrayList<String> homePhones = new ArrayList<String>();
-		homePhones.add("4119189");
-		
-		Person person = new Person().builder()
-				.withName("Fulano")
-				.withCpf("0033435457")
-				.withHomePhones(homePhones)
-				.withMobilePhones(mobilePhones)
+		Person someone = new Person().builder()
+				.withName("Ned")
+				.withCpf("01234567890")
+				.withHomePhones(Arrays.asList("4119189"))
+				.withMobilePhones(Arrays.asList("0123456789", "9675432456"))
 				.build();
 		
-		people.add(person);
+		Person someoneElse = new Person().builder()
+				.withName("Aerys")
+				.withCpf("01234567890")
+				.withHomePhones(Arrays.asList("4119189"))
+				.withMobilePhones(Arrays.asList("0123456789", "9675432456"))
+				.build();
+		
+		people.add(someone);
+		people.add(someoneElse);
 		
 		print(people);
 	}
