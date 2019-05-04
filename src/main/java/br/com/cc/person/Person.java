@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import br.com.cc.util.CpfValidator;
@@ -17,6 +17,19 @@ public class Person {
 	private List<String> homePhones = new ArrayList<String>();
 	private List<String> mobilePhones = new ArrayList<String>();
 	
+	public Person(String name, String cpf, int age, List<String> homePhones, List<String> mobilePhones) {
+		
+		checkNameIsBlank(name);
+		checkCpfIsBlank(cpf);
+		checkMobilePhonesIsEmpty(mobilePhones);
+		
+		this.name = name;
+		this.cpf = cpf;
+		this.age = age;
+		this.homePhones = homePhones;
+		this.mobilePhones = mobilePhones;
+	}
+
 	public String getCpf() {
 		return cpf;
 	}
@@ -37,7 +50,25 @@ public class Person {
 		return mobilePhones;
 	}
 	
-	public List<String> validateFields() {
+	private void checkNameIsBlank(String name) {
+		if (StringUtils.isBlank(name)) {
+			throw new IllegalArgumentException("name cannot be blank");
+		}
+	}
+	
+	private void checkCpfIsBlank(String cpf) {
+		if (StringUtils.isBlank(cpf)) {
+			throw new IllegalArgumentException("cpf cannot be blank");
+		}
+	}
+	
+	private void checkMobilePhonesIsEmpty(List<String> mobilePhones) {
+		if (CollectionUtils.isEmpty(mobilePhones)) {
+			throw new IllegalArgumentException("mobile phones list cannot be empty");
+		}
+	}
+	
+	public List<String> validate() {
 
 		List<String> constraints = new ArrayList<String>();
 		
@@ -51,95 +82,43 @@ public class Person {
 	private Collection<? extends String> checkCpf() {
 		boolean isValidCpf = CpfValidator.isValidCpf(cpf);
 		if (!isValidCpf) {
-			return Collections.singletonList(String.format("%s: CPF %s invalido.", name, cpf));
+			String invalidCpfMessage = String.format("%s: CPF %s invalido.", name, cpf);
+			return Collections.singletonList(invalidCpfMessage);
 		}
 		return new ArrayList<String>();
 	}
 
 	private Collection<? extends String> checkMobilePhones() {
-		return mobilePhones.stream()
-			.filter(phone -> StringUtils.isBlank(phone) || phone.length() != 10)
-			.map(phone -> String.format("%s(%s): Telefone movel %s invalido.", name, cpf, phone))
-			.collect(Collectors.toList());
+		
+		List<String> constraints = new ArrayList<String>();
+
+		mobilePhones.forEach(phone -> {
+			if (StringUtils.isBlank(phone)) {
+				constraints.add(String.format("%s(%s): Possui um telefone movel vazio.", name, cpf));
+			} else if (phone.length() != 10) {
+				constraints.add(String.format("%s(%s): Telefone movel %s invalido.", name, cpf, phone));
+			}
+		});
+		
+		return constraints;
 	}
 
 	private Collection<? extends String> checkHomePhones() {
 		List<String> constraints = new ArrayList<String>();
 
-		if (getHomePhones() != null) {
-			for (String telefone : getHomePhones()) {
-				if (telefone != null) {
-					if (telefone.isEmpty()) {
-						constraints.add("Erro - Telefone inválido");
-					} else {
-						if (telefone.length() < 7) {
-							constraints.add("Erro - Telefone inválido");
-						}
-					}
-
-				} else {
-					constraints.add("Erro - Telefone inválido");
-				}
-			}
+		if(CollectionUtils.isEmpty(homePhones)) {
+			return new ArrayList<String>();
 		}
+
+		homePhones.forEach(phone -> {
+			if (StringUtils.isBlank(phone)) {
+				constraints.add(String.format("%s(%s): Possui um telefone fixo vazio.", name, cpf));
+			} else if (phone.length() < 7) {
+				constraints.add(String.format("%s(%s): Telefone fixo %s invalido.", name, cpf, phone));
+			}
+		});
+		
 		return constraints;
-	}
-	
-	public Builder builder() {
-		return new Builder();
-	}
-	
-	public class Builder {
-
-		private Person person = new Person();
-
-		public Builder() {
-			homePhones = new ArrayList<String>();
-			mobilePhones = new ArrayList<String>();
-		}
-
-		public Builder withName(String name) {
-			checkNameIsBlank(name);
-			person.name = name;
-			return this;
-		}
-		
-		private void checkNameIsBlank(String name) {
-			if (StringUtils.isBlank(name)) {
-				throw new IllegalArgumentException("name cannot be blank");
-			}
-		}
-		
-		public Builder withCpf(String cpf) {
-			checkCpfIsBlank(cpf);
-			person.cpf = cpf;
-			return this;
-		}
-		
-		private void checkCpfIsBlank(String cpf) {
-			if (StringUtils.isBlank(cpf)) {
-				throw new IllegalArgumentException("cpf cannot be blank");
-			}
-		}
-		
-		public Builder withHomeAge(int age) {
-			person.age = age;
-			return this;
-		}
-		
-		public Builder withHomePhones(List<String> homePhones) {
-			person.homePhones = homePhones;
-			return this;
-		}
-		
-		public Builder withMobilePhones(List<String> mobilePhones) {
-			person.mobilePhones = mobilePhones;
-			return this;
-		}
-
-		public Person build() {
-			return person;
-		}
 	}
 
 	@Override

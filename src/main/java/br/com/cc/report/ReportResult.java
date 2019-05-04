@@ -20,4 +20,9 @@ public class ReportResult {
 	public String getText() {
 		return text;
 	}
+
+	@Override
+	public String toString() {
+		return "ReportResult [text=" + text + ", constraints=" + constraints + "]";
+	}
 }

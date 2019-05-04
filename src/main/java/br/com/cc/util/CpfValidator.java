@@ -1,15 +1,19 @@
 package br.com.cc.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class CpfValidator {
 
 	static public boolean isValidCpf(String cpf) {
-		int d1, d2;
-		int digito1, digito2, resto;
+		
+		if(!StringUtils.isNumeric(cpf)) {
+			return false;
+		}
+		
+		int d1 = 0, d2 = 0;
+		int digito1 = 0, digito2 = 0, resto = 0;
 		int digitoCPF;
 		String nDigResult;
-
-		d1 = d2 = 0;
-		digito1 = digito2 = resto = 0;
 
 		for (int nCount = 1; nCount < cpf.length() - 1; nCount++) {
 			digitoCPF = Integer.valueOf(cpf.substring(nCount - 1, nCount)).intValue();
