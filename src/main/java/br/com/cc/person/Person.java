@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
+import br.com.cc.util.CpfValidator;
+
 public class Person {
 	private String name;
 	private String cpf;
@@ -34,18 +36,30 @@ public class Person {
 		return mobilePhones;
 	}
 	
-	public List<String> validaPessoa() {
+	public List<String> validateFields() {
 
 		List<String> constraints = new ArrayList<String>();
+		
+		constraints.addAll(checkCpf());
 		constraints.addAll(checkHomePhones());
 		constraints.addAll(checkMobilePhones());
 		
 		return constraints;
 	}
 
+	private Collection<? extends String> checkCpf() {
+		List<String> constraints = new ArrayList<String>();
+
+		boolean isValidCpf = CpfValidator.isValidCpf(cpf);
+		if (!isValidCpf) {
+			constraints.add(String.format("%s: CPF %s invalido.", name, cpf));
+		}
+		return constraints;
+	}
+
 	private Collection<? extends String> checkMobilePhones() {
 		return mobilePhones.stream()
-			.filter(phone -> phone.length() != 10)
+			.filter(phone -> StringUtils.isBlank(phone) || phone.length() != 10)
 			.map(phone -> String.format("%s(%s): Telefone movel %s invalido.", name, cpf, phone))
 			.collect(Collectors.toList());
 	}

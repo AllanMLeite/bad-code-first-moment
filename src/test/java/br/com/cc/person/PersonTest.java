@@ -63,13 +63,13 @@ public class PersonTest {
 		
 		Person somePerson = new Person().builder()
 				.withName("Fulano")
-				.withCpf("0033435457")
+				.withCpf("01234567890")
 				.withMobilePhones(mobilePhones)
 				.build();
 		
 		List<String> expectedErrors = new ArrayList<String>();
-		expectedErrors.add("Fulano(0033435457): Telefone movel 123456789 invalido.");
-		assertThat(expectedErrors).containsExactlyElementsOf(somePerson.validaPessoa());
+		expectedErrors.add("Fulano(01234567890): Telefone movel 123456789 invalido.");
+		assertThat(expectedErrors).containsExactlyElementsOf(somePerson.validateFields());
 	}
 
 	@Test
@@ -79,10 +79,22 @@ public class PersonTest {
 
 		Person somePerson = new Person().builder()
 				.withName("Fulano")
-				.withCpf("0033435457")
+				.withCpf("01234567890")
 				.withMobilePhones(mobilePhones)
 				.build();
 
-		assertThat(new ArrayList<String>()).containsExactlyElementsOf(somePerson.validaPessoa());
+		assertThat(new ArrayList<String>()).containsExactlyElementsOf(somePerson.validateFields());
+	}
+	
+	@Test
+	public void shouldReturnCpfInvalidError() {
+		Person somePerson = new Person().builder()
+				.withName("Fulano")
+				.withCpf("01234569865")
+				.build();
+		
+		List<String> expectedErrors = new ArrayList<String>();
+		expectedErrors.add("Fulano: CPF 01234569865 invalido.");
+		assertThat(expectedErrors).containsExactlyElementsOf(somePerson.validateFields());
 	}
 }
