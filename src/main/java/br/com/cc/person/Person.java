@@ -1,7 +1,9 @@
 package br.com.cc.person;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,8 +11,8 @@ public class Person {
 	private String name;
 	private String cpf;
 	private int age;
-	private List<String> homePhones;
-	private List<String> mobilePhones;
+	private List<String> homePhones = new ArrayList<String>();
+	private List<String> mobilePhones = new ArrayList<String>();
 	
 	public String getCpf() {
 		return cpf;
@@ -30,6 +32,44 @@ public class Person {
 	
 	public List<String> getMobilePhones() {
 		return mobilePhones;
+	}
+	
+	public List<String> validaPessoa() {
+
+		List<String> constraints = new ArrayList<String>();
+		constraints.addAll(checkHomePhones());
+		constraints.addAll(checkMobilePhones());
+		
+		return constraints;
+	}
+
+	private Collection<? extends String> checkMobilePhones() {
+		return mobilePhones.stream()
+			.filter(phone -> phone.length() != 10)
+			.map(phone -> String.format("%s(%s): Telefone movel %s invalido.", name, cpf, phone))
+			.collect(Collectors.toList());
+	}
+
+	private Collection<? extends String> checkHomePhones() {
+		List<String> constraints = new ArrayList<String>();
+
+		if (getHomePhones() != null) {
+			for (String telefone : getHomePhones()) {
+				if (telefone != null) {
+					if (telefone.isEmpty()) {
+						constraints.add("Erro - Telefone inválido");
+					} else {
+						if (telefone.length() < 7) {
+							constraints.add("Erro - Telefone inválido");
+						}
+					}
+
+				} else {
+					constraints.add("Erro - Telefone inválido");
+				}
+			}
+		}
+		return constraints;
 	}
 	
 	public Builder builder() {
